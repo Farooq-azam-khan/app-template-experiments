@@ -3,3 +3,6 @@
 * schadcn
 * tailwind
 * authjs (v5@beta) `pnpm dlx auth secret`
+* sentry - error tracking
+* sentry - user feedback
+* upstash - for rate limiting
