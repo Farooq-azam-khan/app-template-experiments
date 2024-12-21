@@ -3,8 +3,9 @@ import { type Config } from "drizzle-kit";
 export default {
     schema: "./src/db/schema.ts",
     dialect: "postgresql",
+    out: "./drizzle",
     dbCredentials: {
-        url: "postgresql://postgres:pg-password@localhost:5432",
+        url: process.env.DATABASE_URL!,
     },
-    tablesFilter: ["test-pg_*"],
+    //tablesFilter: ["test-pg_*"],
 } satisfies Config;
