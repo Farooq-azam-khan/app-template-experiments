@@ -1,22 +1,36 @@
+// Example model schema from the Drizzle docs
+// https://orm.drizzle.team/docs/sql-schema-declaration
+
+/**
+ * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
+ * database instance for multiple projects.
+ *
+ * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
+ */
+
 import {
-    integer,
-    sqliteTable,
+    boolean,
+    timestamp,
     text,
     primaryKey,
-} from "drizzle-orm/sqlite-core";
+    pgTableCreator,
+    integer,
+} from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
-export const users = sqliteTable("user", {
+export const createTable = pgTableCreator((name) => `test-pg_${name}`);
+
+export const users = createTable("user", {
     id: text("id")
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
     name: text("name"),
     email: text("email").unique(),
-    emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
+    emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
 });
 
-export const accounts = sqliteTable(
+export const accounts = createTable(
     "account",
     {
         userId: text("userId")
@@ -40,20 +54,20 @@ export const accounts = sqliteTable(
     }),
 );
 
-export const sessions = sqliteTable("session", {
+export const sessions = createTable("session", {
     sessionToken: text("sessionToken").primaryKey(),
     userId: text("userId")
         .notNull()
         .references(() => users.id, { onDelete: "cascade" }),
-    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
-export const verificationTokens = sqliteTable(
+export const verificationTokens = createTable(
     "verificationToken",
     {
         identifier: text("identifier").notNull(),
         token: text("token").notNull(),
-        expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+        expires: timestamp("expires", { mode: "date" }).notNull(),
     },
     (verificationToken) => ({
         compositePk: primaryKey({
@@ -62,7 +76,7 @@ export const verificationTokens = sqliteTable(
     }),
 );
 
-export const authenticators = sqliteTable(
+export const authenticators = createTable(
     "authenticator",
     {
         credentialID: text("credentialID").notNull().unique(),
@@ -73,9 +87,7 @@ export const authenticators = sqliteTable(
         credentialPublicKey: text("credentialPublicKey").notNull(),
         counter: integer("counter").notNull(),
         credentialDeviceType: text("credentialDeviceType").notNull(),
-        credentialBackedUp: integer("credentialBackedUp", {
-            mode: "boolean",
-        }).notNull(),
+        credentialBackedUp: boolean("credentialBackedUp").notNull(),
         transports: text("transports"),
     },
     (authenticator) => ({

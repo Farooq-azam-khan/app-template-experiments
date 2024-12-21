@@ -1,4 +1,5 @@
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/node-postgres";
+import * as schema from "./schema";
+import "dotenv/config";
 
-// TODO: db config loaded from .env.* file
-const db = drizzle({ connection: { url: "local.db" } });
+export const db = drizzle(process.env.DATABASE_URL!, { schema });
