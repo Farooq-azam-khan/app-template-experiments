@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { db } from "@/db";
 
 async function get_user_projects(user_id: string) {
+  // TODO: add a caching layer
   "use server";
   return await db.query.projects.findMany({
     where: (projects, { eq }) => eq(user_id, projects.creator),
