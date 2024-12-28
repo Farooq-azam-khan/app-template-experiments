@@ -207,4 +207,8 @@ export const productReviewsRelations = relations(productReviews, ({ one }) => ({
     fields: [productReviews.productId],
     references: [products.id],
   }),
+  customer: one(users, {
+    fields: [productReviews.customerId],
+    references: [users.id],
+  }),
 }));

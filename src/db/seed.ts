@@ -30,6 +30,9 @@ async function main() {
       products: {
         count: 1000,
         columns: {
+          description: f.loremIpsum({
+            sentencesCount: 2,
+          }),
           price: f.number({
             minValue: 0.01,
             maxValue: 100000,
