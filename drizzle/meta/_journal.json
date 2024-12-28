@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1735335636981,
-      "tag": "0000_public_annihilus",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1735336676789,
-      "tag": "0001_first_shen",
+      "when": 1735403613832,
+      "tag": "0000_strong_anthem",
       "breakpoints": true
     }
   ]
