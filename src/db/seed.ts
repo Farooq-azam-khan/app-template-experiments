@@ -1,5 +1,11 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import { projects, productReviews, productCategories } from "./schema";
+import {
+  users,
+  products,
+  projects,
+  productReviews,
+  productCategories,
+} from "./schema";
 import { seed } from "drizzle-seed";
 
 import "dotenv/config";
@@ -11,16 +17,52 @@ async function main() {
     return;
   }
   const db = drizzle(db_env);
-  await seed(db, { projects, productReviews, productCategories }).refine(
-    (f) => {
-      return {
-        projects: {
-          count: 100,
-          creator: f.valuesFromArray({ values: [1] }),
+  await seed(db, {
+    projects,
+    productCategories,
+    productReviews,
+    products,
+  }).refine((f) => {
+    return {
+      productCategories: {
+        count: 5000,
+      },
+      products: {
+        count: 1000,
+        columns: {
+          price: f.number({
+            minValue: 0.01,
+            maxValue: 100000,
+          }),
         },
-      };
-    },
-  );
+      },
+      productReviews: {
+        count: 7000,
+        columns: {
+          rating: f.int({
+            minValue: 0,
+            maxValue: 100,
+          }),
+          customerId: f.valuesFromArray({
+            values: [1],
+          }),
+
+          productId: f.int({
+            minValue: 1,
+            maxValue: 100,
+          }),
+        },
+      },
+      projects: {
+        count: 8000,
+        columns: {
+          creator: f.valuesFromArray({
+            values: [1],
+          }),
+        },
+      },
+    };
+  });
 }
 
 main()

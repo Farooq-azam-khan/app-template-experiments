@@ -28,7 +28,7 @@ export default async function Projects() {
   }
   const user_projects = await get_user_projects(session.user.id);
   return (
-    <div className="mx-5 mt-10">
+    <div>
       <div>Projects for user {session.user.name}</div>
       <Table>
         <TableCaption>A list of your recent projects.</TableCaption>

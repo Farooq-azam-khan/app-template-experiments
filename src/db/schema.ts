@@ -18,8 +18,10 @@ import {
   integer,
   serial,
   decimal,
+  index,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
+import { relations } from "drizzle-orm";
 
 export const createTable = pgTableCreator((name) => `test-pg_${name}`);
 
@@ -32,6 +34,10 @@ export const users = createTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
 });
+
+export const usersRelations = relations(users, ({ many }) => ({
+  projects: many(projects),
+}));
 
 export const accounts = createTable(
   "account",
@@ -106,13 +112,30 @@ export const authenticators = createTable(
   ],
 );
 
-export const projects = createTable("project", {
-  creator: integer("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  project_name: text("project_name").notNull(),
-  id: serial("id").primaryKey(),
-});
+export const projects = createTable(
+  "project",
+  {
+    creator: integer("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    project_name: text("project_name").notNull(),
+    id: serial("id").primaryKey(),
+  },
+  (table) => {
+    return [
+      {
+        project_name_idx: index("project_name_idx").on(table.project_name),
+      },
+    ];
+  },
+);
+
+export const projectsRelations = relations(projects, ({ one }) => ({
+  user: one(users, {
+    fields: [projects.creator],
+    references: [users.id],
+  }),
+}));
 
 export const products = createTable("product", {
   id: serial("id").primaryKey(),
@@ -122,6 +145,10 @@ export const products = createTable("product", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const productRelations = relations(products, ({ many }) => ({
+  productReviews: many(productReviews),
+}));
 
 export const orders = createTable("order", {
   id: serial("id").primaryKey(),
@@ -168,3 +195,10 @@ export const productReviews = createTable("product_review", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const productReviewsRelations = relations(productReviews, ({ one }) => ({
+  product: one(products, {
+    fields: [productReviews.productId],
+    references: [products.id],
+  }),
+}));
