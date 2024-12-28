@@ -46,7 +46,6 @@ export default async function Product({
 }) {
   const project_id = +(await params).id;
   const product_data = await get_products(project_id);
-
   return (
     <Card>
       <CardHeader>
