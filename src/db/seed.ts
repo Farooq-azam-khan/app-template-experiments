@@ -43,6 +43,9 @@ async function main() {
             minValue: 0,
             maxValue: 100,
           }),
+          review: f.loremIpsum({
+            sentencesCount: 5,
+          }),
           customerId: f.valuesFromArray({
             values: [1],
           }),
@@ -56,6 +59,7 @@ async function main() {
       projects: {
         count: 8000,
         columns: {
+          project_name: f.companyName(),
           creator: f.valuesFromArray({
             values: [1],
           }),

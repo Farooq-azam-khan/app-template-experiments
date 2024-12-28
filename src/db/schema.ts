@@ -112,14 +112,17 @@ export const authenticators = createTable(
   ],
 );
 
-export const projects = createTable("project", {
-  creator: integer("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  project_name: text("project_name").notNull(),
-  id: serial("id").primaryKey(),
-});
-export const pidx = index("project_name_idx").on(projects.project_name);
+export const projects = createTable(
+  "project",
+  {
+    creator: integer("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    project_name: text("project_name").notNull(),
+    id: serial("id").primaryKey(),
+  },
+  (table) => [index("project_name_idx").on(table.project_name)],
+);
 
 export const projectsRelations = relations(projects, ({ one }) => ({
   user: one(users, {
@@ -128,14 +131,18 @@ export const projectsRelations = relations(projects, ({ one }) => ({
   }),
 }));
 
-export const products = createTable("product", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: text("description"),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const products = createTable(
+  "product",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description"),
+    price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("product_name_idx").on(table.name)],
+);
 
 export const productRelations = relations(products, ({ many }) => ({
   productReviews: many(productReviews),
@@ -166,26 +173,34 @@ export const orderItems = createTable("order_item", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const productCategories = createTable("product_category", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const productCategories = createTable(
+  "product_category",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("product_category_name_idx").on(table.name)],
+);
 
-export const productReviews = createTable("product_review", {
-  id: serial("id").primaryKey(),
-  productId: integer("product_id")
-    .notNull()
-    .references(() => products.id),
-  customerId: integer("customer_id")
-    .notNull()
-    .references(() => users.id),
-  rating: integer("rating").notNull(),
-  review: text("review"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const productReviews = createTable(
+  "product_review",
+  {
+    id: serial("id").primaryKey(),
+    productId: integer("product_id")
+      .notNull()
+      .references(() => products.id),
+    customerId: integer("customer_id")
+      .notNull()
+      .references(() => users.id),
+    rating: integer("rating").notNull(),
+    review: text("review"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("product_id_fk_idx").on(table.productId)],
+);
 
 export const productReviewsRelations = relations(productReviews, ({ one }) => ({
   product: one(products, {
