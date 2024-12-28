@@ -1,6 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import {
-  users,
   products,
   projects,
   productReviews,

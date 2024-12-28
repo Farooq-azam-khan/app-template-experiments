@@ -6,11 +6,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/db";
-import { products } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { productReviews, products } from "@/db/schema";
+import { eq, InferSelectModel } from "drizzle-orm";
 import { format } from "date-fns";
+import { redis } from "@/db/index";
+
+type ProductModel = InferSelectModel<typeof products> & {
+  productReviews: InferSelectModel<typeof productReviews>;
+};
 
 async function get_products(product_id: number) {
+  const cached_products_page_page_data: ProductModel | null = await redis.get(
+    `/prodcuts/${product_id}`,
+  );
+  if (cached_products_page_page_data) {
+    return cached_products_page_page_data;
+  }
   const product_data = await db.query.products.findFirst({
     where: eq(products.id, product_id),
     with: {
@@ -21,11 +32,21 @@ async function get_products(product_id: number) {
       },
     },
   });
+  // Expires in 10secs
+  await redis.set(`/products/${product_id}`, product_data, {
+    ex: 10,
+  });
   return product_data;
 }
 
-export default async function Product({ params }: { params: { id: string } }) {
-  const product_data = await get_products(+params.id);
+export default async function Product({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const project_id = +(await params).id;
+  const product_data = await get_products(project_id);
+
   return (
     <Card>
       <CardHeader>
