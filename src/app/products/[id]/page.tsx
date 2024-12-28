@@ -32,9 +32,8 @@ async function get_products(product_id: number) {
       },
     },
   });
-  // Expires in 10secs
   await redis.set(`/products/${product_id}`, product_data, {
-    ex: 10,
+    ex: 10, // expires in sec
   });
   return product_data;
 }

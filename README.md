@@ -114,3 +114,11 @@ EXPLAIN ANALYZE SELECT * FROM "test-pg_product_review" AS pr WHERE pr."product_i
  Execution Time: 13.405 ms
 (5 rows)
 ```
+
+# Redis Cache Experiments
+* getting data from `/products/[id]` page
+* caching helps a lot and can be easily controlled depending on what the user does
+* e.g. if review is written about that product, then that product data key should be deleted
+
+![ttfb database query](docs/ttfb-products-page.png)
+![ttfb database cache](docs/ttfb-products-after-cache.png)
