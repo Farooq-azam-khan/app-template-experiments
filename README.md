@@ -7,6 +7,9 @@
 * sentry - user feedback
 * upstash - for rate limiting
 
+# Startup
+* `docker compose --env-file .env up`
+
 # Index creation Experiments
 * getting 8k rows for a user with no indexes - takes 11ms.
 ```sql
