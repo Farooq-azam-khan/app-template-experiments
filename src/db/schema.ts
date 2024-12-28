@@ -112,23 +112,14 @@ export const authenticators = createTable(
   ],
 );
 
-export const projects = createTable(
-  "project",
-  {
-    creator: integer("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    project_name: text("project_name").notNull(),
-    id: serial("id").primaryKey(),
-  },
-  (table) => {
-    return [
-      {
-        project_name_idx: index("project_name_idx").on(table.project_name),
-      },
-    ];
-  },
-);
+export const projects = createTable("project", {
+  creator: integer("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  project_name: text("project_name").notNull(),
+  id: serial("id").primaryKey(),
+});
+export const pidx = index("project_name_idx").on(projects.project_name);
 
 export const projectsRelations = relations(projects, ({ one }) => ({
   user: one(users, {
