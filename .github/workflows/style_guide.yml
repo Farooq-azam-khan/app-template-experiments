@@ -9,4 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Runs pnpm lint
-        run: pnpm check
+        run: |
+          npm i -g pnpm
+          pnpm check
