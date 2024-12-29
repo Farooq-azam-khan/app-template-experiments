@@ -17,7 +17,7 @@ async function get_user_projects(user_id: number) {
   // TODO: add a caching layer
   "use server";
   return await db.query.projects.findMany({
-    where: eq(projects.creator, user_id),
+    where: eq(projects.creatorId, user_id),
     limit: 100,
   });
 }
