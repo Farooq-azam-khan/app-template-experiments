@@ -162,6 +162,10 @@ export const orders = createTable("order", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const ordersRelations = relations(orders, ({ many }) => ({
+  orderItems: many(orderItems),
+}));
+
 export const orderItems = createTable("order_item", {
   id: serial("id").primaryKey(),
   orderId: integer("order_id")
@@ -174,6 +178,13 @@ export const orderItems = createTable("order_item", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+}));
 
 export const productCategories = createTable(
   "product_category",
