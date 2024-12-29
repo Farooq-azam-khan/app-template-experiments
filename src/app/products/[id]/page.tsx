@@ -6,13 +6,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/db";
-import { productReviews, products } from "@/db/schema";
+import { productReviews, products, users } from "@/db/schema";
 import { eq, InferSelectModel } from "drizzle-orm";
 import { format } from "date-fns";
 import { redis } from "@/db/index";
 
+type ProductReviewModel = InferSelectModel<typeof productReviews> & {
+  customer: InferSelectModel<typeof users>;
+};
 type ProductModel = InferSelectModel<typeof products> & {
-  productReviews: InferSelectModel<typeof productReviews>;
+  productReviews: ProductReviewModel[];
 };
 
 async function get_products(product_id: number) {

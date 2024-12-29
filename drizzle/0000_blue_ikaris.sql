@@ -1,5 +1,5 @@
 CREATE TABLE "test-pg_account" (
-	"userId" integer NOT NULL,
+	"userId" text NOT NULL,
 	"type" text NOT NULL,
 	"provider" text NOT NULL,
 	"providerAccountId" text NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE "test-pg_account" (
 --> statement-breakpoint
 CREATE TABLE "test-pg_authenticator" (
 	"credentialID" text NOT NULL,
-	"userId" integer NOT NULL,
+	"userId" text NOT NULL,
 	"providerAccountId" text NOT NULL,
 	"credentialPublicKey" text NOT NULL,
 	"counter" integer NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE "test-pg_order_item" (
 --> statement-breakpoint
 CREATE TABLE "test-pg_order" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"customer_id" integer NOT NULL,
+	"customer_id" text NOT NULL,
 	"order_date" timestamp DEFAULT now() NOT NULL,
 	"total" numeric(10, 2) NOT NULL,
 	"status" varchar(50) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE "test-pg_product_category" (
 CREATE TABLE "test-pg_product_review" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer NOT NULL,
-	"customer_id" integer NOT NULL,
+	"customer_id" text NOT NULL,
 	"rating" integer NOT NULL,
 	"review" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -70,19 +70,19 @@ CREATE TABLE "test-pg_product" (
 );
 --> statement-breakpoint
 CREATE TABLE "test-pg_project" (
-	"userId" integer NOT NULL,
+	"userId" text NOT NULL,
 	"project_name" text NOT NULL,
 	"id" serial PRIMARY KEY NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "test-pg_session" (
 	"sessionToken" text PRIMARY KEY NOT NULL,
-	"userId" integer NOT NULL,
+	"userId" text NOT NULL,
 	"expires" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "test-pg_user" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
 	"email" text,
 	"emailVerified" timestamp,
@@ -105,4 +105,7 @@ ALTER TABLE "test-pg_product_review" ADD CONSTRAINT "test-pg_product_review_prod
 ALTER TABLE "test-pg_product_review" ADD CONSTRAINT "test-pg_product_review_customer_id_test-pg_user_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."test-pg_user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "test-pg_project" ADD CONSTRAINT "test-pg_project_userId_test-pg_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."test-pg_user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "test-pg_session" ADD CONSTRAINT "test-pg_session_userId_test-pg_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."test-pg_user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "product_category_name_idx" ON "test-pg_product_category" USING btree ("name");--> statement-breakpoint
+CREATE INDEX "product_id_fk_idx" ON "test-pg_product_review" USING btree ("product_id");--> statement-breakpoint
+CREATE INDEX "product_name_idx" ON "test-pg_product" USING btree ("name");--> statement-breakpoint
 CREATE INDEX "project_name_idx" ON "test-pg_project" USING btree ("project_name");
