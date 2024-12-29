@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-async function get_user_projects(user_id: number) {
+async function get_user_projects(user_id: string) {
   // TODO: add a caching layer
   "use server";
   return await db.query.projects.findMany({
@@ -27,7 +27,7 @@ export default async function Projects() {
   if (!session?.user?.id) {
     return <div>Not logged in</div>;
   }
-  const user_projects = await get_user_projects(+session.user.id);
+  const user_projects = await get_user_projects(session.user.id);
   return (
     <div>
       <div>Projects for user {session.user.name}</div>
