@@ -4,7 +4,7 @@ on:
     types: [opened, synchronize, reopened, closed]
 
 jobs:
-  lint:
+  linting-and-formatting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,4 +12,5 @@ jobs:
         run: |
           npm i -g pnpm
           pnpm i
+          pnpm format:check
           pnpm check
