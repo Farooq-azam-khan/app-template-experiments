@@ -1,0 +1,16 @@
+name: Enforce Styleguide
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  linting-and-formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Runs pnpm lint
+        run: |
+          npm i -g pnpm
+          pnpm i
+          pnpm format:check
+          pnpm check

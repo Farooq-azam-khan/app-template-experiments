@@ -27,8 +27,9 @@ export const createTable = pgTableCreator((name) => `test-pg_${name}`);
 
 // auth schema
 export const users = createTable("user", {
-  id: serial("id").primaryKey(),
-  //.$defaultFn(() => crypto.randomUUID()),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
@@ -37,12 +38,13 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   projects: many(projects),
+  productReviews: many(productReviews),
 }));
 
 export const accounts = createTable(
   "account",
   {
-    userId: integer("userId")
+    userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     type: text("type").$type<AdapterAccountType>().notNull(),
@@ -67,7 +69,7 @@ export const accounts = createTable(
 
 export const sessions = createTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
-  userId: integer("userId")
+  userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
@@ -93,7 +95,7 @@ export const authenticators = createTable(
   "authenticator",
   {
     credentialID: text("credentialID").notNull().unique(),
-    userId: integer("userId")
+    userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     providerAccountId: text("providerAccountId").notNull(),
@@ -115,7 +117,7 @@ export const authenticators = createTable(
 export const projects = createTable(
   "project",
   {
-    creator: integer("userId")
+    creatorId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     project_name: text("project_name").notNull(),
@@ -125,8 +127,8 @@ export const projects = createTable(
 );
 
 export const projectsRelations = relations(projects, ({ one }) => ({
-  user: one(users, {
-    fields: [projects.creator],
+  creator: one(users, {
+    fields: [projects.creatorId],
     references: [users.id],
   }),
 }));
@@ -150,7 +152,7 @@ export const productRelations = relations(products, ({ many }) => ({
 
 export const orders = createTable("order", {
   id: serial("id").primaryKey(),
-  customerId: integer("customer_id")
+  customerId: text("customer_id")
     .notNull()
     .references(() => users.id),
   orderDate: timestamp("order_date").notNull().defaultNow(),
@@ -191,7 +193,7 @@ export const productReviews = createTable(
     productId: integer("product_id")
       .notNull()
       .references(() => products.id),
-    customerId: integer("customer_id")
+    customerId: text("customer_id")
       .notNull()
       .references(() => users.id),
     rating: integer("rating").notNull(),

@@ -5,7 +5,6 @@ import { Card, CardHeader, CardContent, CardTitle } from "./ui/card";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
