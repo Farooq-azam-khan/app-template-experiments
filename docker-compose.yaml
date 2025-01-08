@@ -12,3 +12,12 @@ services:
       SRH_MODE: env
       SRH_TOKEN: "${UPSTASH_REDIS_REST_TOKEN}"
       SRH_CONNECTION_STRING: "${REDIS_URL}" # Using `redis` hostname since they're in the same Docker network.
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      DB_PORT: "5432"
+      POSTGRES_DB: "test-pg"
+      POSTGRES_USER: "postgres"
