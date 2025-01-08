@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Use this script to start a docker container for a local development database
-
+# USING `docker-compose.yaml`
 # TO RUN ON WINDOWS:
 # 1. Install WSL (Windows Subsystem for Linux) - https://learn.microsoft.com/en-us/windows/wsl/install
 # 2. Install Docker Desktop for Windows - https://docs.docker.com/docker-for-windows/install/
