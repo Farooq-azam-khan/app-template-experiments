@@ -2,9 +2,11 @@ import { redis, db } from "@/db";
 import { Project, projects } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function get_user_projects(user_id: string): Promise<Project[]> {
+export async function get_user_projects(user_id: string) {
   "use server";
-  const cachedProjects = await redis.get(`/projects/${user_id}`);
+  const cachedProjects: Project[] | null = await redis.get(
+    `/projects/${user_id}`,
+  );
 
   if (cachedProjects) {
     return cachedProjects;
@@ -13,7 +15,7 @@ export async function get_user_projects(user_id: string): Promise<Project[]> {
     where: eq(projects.creatorId, user_id),
     limit: 100,
   });
-  redis.set(`/projects/${user_id}`, user_projects, {
+  await redis.set(`/projects/${user_id}`, user_projects, {
     ex: 10 * 60, // expires in minutes
   });
   return user_projects;
