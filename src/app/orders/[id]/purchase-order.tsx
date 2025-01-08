@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-export function PurchaseOrder({ order_id }) {
+export function PurchaseOrder() {
   const [purchase_data, set_purchase_data] = useState(null);
   return (
     <div>
