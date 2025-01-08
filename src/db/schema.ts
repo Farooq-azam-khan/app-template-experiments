@@ -21,7 +21,7 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 
 export const createTable = pgTableCreator((name) => `test-pg_${name}`);
 
@@ -132,6 +132,8 @@ export const projectsRelations = relations(projects, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export type Project = InferSelectModel<typeof projects>;
 
 export const products = createTable(
   "product",
