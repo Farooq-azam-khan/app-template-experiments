@@ -1,7 +1,4 @@
 import { auth } from "@/auth";
-import { db } from "@/db";
-import { eq } from "drizzle-orm";
-import { projects } from "@/db/schema";
 import {
   Table,
   TableBody,
@@ -12,15 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-async function get_user_projects(user_id: string) {
-  // TODO: add a caching layer
-  "use server";
-  return await db.query.projects.findMany({
-    where: eq(projects.creatorId, user_id),
-    limit: 100,
-  });
-}
+import { get_user_projects } from "./get_user_projects";
 
 export default async function Projects() {
   const session = await auth();
