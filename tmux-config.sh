@@ -23,4 +23,4 @@ tmux split-window -h -t $SESSION_NAME:2
 tmux send-keys -t $SESSION_NAME:2.1 "pnpm dev" C-m
 
 # Attach to the newly created session
-tmux attach-session -t $SESSION_NAME
+tmux attach-session -t $SESSION_NAME -d
